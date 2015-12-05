@@ -1,5 +1,6 @@
 require 'carrierwave/video/thumbnailer/ffmpegthumbnailer/options'
 require 'open3'
+require 'mini_magick'
 
 module CarrierWave
   module Video
@@ -55,6 +56,12 @@ module CarrierWave
             end
 
             handle_exit_code(exit_code, outputs, logger)
+
+            mini_magick_opts = options.options[:mini_magick_opts]
+            if mini_magick_opts.is_a?(Proc)
+              mini_magick_opts.call(::MiniMagick::Image.new("#{output_path.shellescape}"))
+            end
+
         end
 
         private

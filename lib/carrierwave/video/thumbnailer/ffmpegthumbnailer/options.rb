@@ -11,6 +11,10 @@ module CarrierWave
           :workaround
         ]
 
+        IGNORE_OPTS = [
+          :mini_magick_opts
+        ]
+
         def initialize opts
           opts.each { |k, v| self[k] = v}
         end
@@ -19,6 +23,8 @@ module CarrierWave
           self.map do |k, v|
             if BOOLEAN.include? k
               cli_key k if v
+            elsif IGNORE_OPTS.include? k
+              ""
             else
               "#{cli_key k} #{cli_val v}"
             end

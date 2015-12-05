@@ -8,6 +8,7 @@ homepage: https://github.com/evrone/carrierwave-video-thumbnailer#readme
 
 dependencies:
   carrierwave: '>= 0'
+  mini_magick: '>= 0'
 
 development_dependencies:
   pry: '>= 0'
