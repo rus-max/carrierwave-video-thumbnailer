@@ -7,6 +7,33 @@
 * [Documentation](http://rubydoc.info/gems/carrierwave-video-thumbnailer/frames)
 * [Email](mailto:argentoff at gmail.com)
 
+## READ ME
+
+This fork of `carrierwave-video-thumbnailer` adds the ability to post-process the resulting thumbnail easily using MiniMagick, in case the default resizing and quality options are not sufficient. To expose as much of MiniMagick's API as possible, I opted for the user to pass in a Proc.
+
+To use it, simply pass in a Proc as `mini_magick_opts`:
+
+```ruby
+# app/uploaders/video_uploader.rb
+
+mini_magick_proc = Proc.new { |image|
+  image.rotate "90" # rotates the image 90 degrees clockwise
+}
+
+version :preview_image do
+  process thumbnail: [{format: 'jpg', quality: 8, size: 360, logger: Rails.logger, mini_magick_opts: mini_magick_proc}]
+  def full_filename for_file
+    jpg_name for_file, version_name
+  end
+end
+
+def jpg_name for_file, version_name
+  %Q{#{version_name}_#{for_file.chomp(File.extname(for_file))}.jpg}
+end
+```
+
+To see the full extent of image modifications possible, [visit the MiniMagick repository](https://github.com/minimagick/minimagick).
+
 ## Description
 
 A thumbnailer plugin for Carrierwave. It mixes into your uploader setup and
