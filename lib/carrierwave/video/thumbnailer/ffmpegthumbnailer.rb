@@ -43,6 +43,8 @@ module CarrierWave
         def run options
           logger = options.logger
           #cmd = %Q{#{CarrierWave::Video::Thumbnailer::FFMpegThumbnailer.binary} -i #{input_path.shellescape} -o #{output_path.shellescape} #{options.to_cli}}.rstrip
+          logger.info(input_path) if logger
+          logger.info(output_path) if logger
 
           movie = FFMPEG::Movie.new(input_path)
           _output_path = input_path + ".jpg"
