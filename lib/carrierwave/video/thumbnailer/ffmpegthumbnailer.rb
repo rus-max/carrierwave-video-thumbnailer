@@ -42,26 +42,15 @@ module CarrierWave
 
         def run options
           logger = options.logger
-          cmd = %Q{#{CarrierWave::Video::Thumbnailer::FFMpegThumbnailer.binary} -i #{input_path.shellescape} -o #{output_path.shellescape} #{options.to_cli}}.rstrip
+          #cmd = %Q{#{CarrierWave::Video::Thumbnailer::FFMpegThumbnailer.binary} -i #{input_path.shellescape} -o #{output_path.shellescape} #{options.to_cli}}.rstrip
 
-            logger.info("Running....#{cmd}") if logger
-            outputs = []
-            exit_code = nil
-
-            Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
-              stderr.each("r") do |line|
-                outputs << line
-              end
-              exit_code = wait_thr.value
-            end
-
-            handle_exit_code(exit_code, outputs, logger)
-
-            mini_magick_opts = options.options[:mini_magick_opts]
-            if mini_magick_opts.is_a?(Proc)
-              mini_magick_opts.call(::MiniMagick::Image.new("#{output_path.shellescape}"), input_path)
-            end
-
+          movie = FFMPEG::Movie.new(input_path)
+          _output_path = input_path + ".jpg"
+          movie.screenshot(output_path, {resolution: '512x312' }, preserve_aspect_ratio: :width)
+          mini_magick_opts = options.options[:mini_magick_opts]
+          if mini_magick_opts.is_a?(Proc)
+            mini_magick_opts.call(::MiniMagick::Image.new("#{output_path}"), input_path)
+          end
         end
 
         private
