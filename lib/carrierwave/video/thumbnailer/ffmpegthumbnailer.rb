@@ -30,7 +30,6 @@ module CarrierWave
             logger.level = Logger::INFO
             @logger = logger
           end
-
         end
 
         attr_reader :input_path, :output_path
@@ -42,13 +41,12 @@ module CarrierWave
 
         def run options
           logger = options.logger
-          #cmd = %Q{#{CarrierWave::Video::Thumbnailer::FFMpegThumbnailer.binary} -i #{input_path.shellescape} -o #{output_path.shellescape} #{options.to_cli}}.rstrip
+
           logger.info(input_path) if logger
           logger.info(output_path) if logger
 
           movie = FFMPEG::Movie.new(input_path)
-          _output_path = input_path + ".jpg"
-          movie.screenshot(output_path, {resolution: '512x312' }, preserve_aspect_ratio: :width)
+          movie.screenshot(output_path, { resolution: options.resolution }, preserve_aspect_ratio: :width)
           mini_magick_opts = options.options[:mini_magick_opts]
           if mini_magick_opts.is_a?(Proc)
             mini_magick_opts.call(::MiniMagick::Image.new("#{output_path}"), input_path)
