@@ -41,12 +41,13 @@ module CarrierWave
 
         def run options
           logger = options.logger
-
           logger.info(input_path) if logger
           logger.info(output_path) if logger
 
-          movie = FFMPEG::Movie.new(input_path)
-          movie.screenshot(output_path, { resolution: options.resolution }, preserve_aspect_ratio: :width)
+          resolution = options.options.dig(:screenshot, :resolution) || '300x300'
+
+          movie = ::FFMPEG::Movie.new(input_path)
+          movie.screenshot(output_path, { resolution: resolution }, preserve_aspect_ratio: :width)
           mini_magick_opts = options.options[:mini_magick_opts]
           if mini_magick_opts.is_a?(Proc)
             mini_magick_opts.call(::MiniMagick::Image.new("#{output_path}"), input_path)

@@ -12,7 +12,8 @@ module CarrierWave
         ]
 
         IGNORE_OPTS = [
-          :mini_magick_opts
+          :mini_magick_opts,
+          :screenshot
         ]
 
         def initialize opts
@@ -56,13 +57,12 @@ module CarrierWave
 
       class FFMpegThumbnailerOptions
 
-        attr_reader :format, :options, :logger, :callbacks, :custom, :resolution
+        attr_reader :format, :options, :logger, :callbacks, :custom
 
         def initialize options
           @callbacks  = options.delete(:callbacks) || {}
           @custom     = options.delete :custom
           @format     = options.delete :format
-          @resolution = options.delete :resolution
           @logger     = options.delete :logger
           @options    = Options.new (options)
         end
